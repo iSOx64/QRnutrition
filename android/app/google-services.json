@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "461448448485",
+    "project_id": "devmobile-69e4c",
+    "storage_bucket": "devmobile-69e4c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:461448448485:android:803e1ae410cd24479a470c",
+        "android_client_info": {
+          "package_name": "com.example.first_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "461448448485-amkk0a9gj5ceff0999q8939rh4b6ju4e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdbKVU6qK_EZb96mMJsIDsHYKZImCa86Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "461448448485-amkk0a9gj5ceff0999q8939rh4b6ju4e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

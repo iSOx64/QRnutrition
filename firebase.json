@@ -1,0 +1,24 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "devmobile-69e4c",
+          "appId": "1:461448448485:android:803e1ae410cd24479a470c",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "devmobile-69e4c",
+          "configurations": {
+            "android": "1:461448448485:android:803e1ae410cd24479a470c"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "rules": "firestore.rules"
+  }
+}
