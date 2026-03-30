@@ -50,4 +50,16 @@ class HistoryFirestoreService {
     }
     await batch.commit();
   }
+
+  Future<void> updateHistoryItem({
+    required String userId,
+    required String scanId,
+    required ScanHistoryItem updated,
+  }) async {
+    await _usersRef
+        .doc(userId)
+        .collection('scan_history')
+        .doc(scanId)
+        .update(updated.toMap());
+  }
 }

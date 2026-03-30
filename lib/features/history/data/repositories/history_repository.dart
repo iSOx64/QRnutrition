@@ -44,4 +44,20 @@ class HistoryRepository {
       throw AppFailure(e.code, 'Impossible de supprimer l’élément.');
     }
   }
+
+  Future<void> updateHistoryItem({
+    required String userId,
+    required String scanId,
+    required ScanHistoryItem updated,
+  }) async {
+    try {
+      await _service.updateHistoryItem(
+        userId: userId,
+        scanId: scanId,
+        updated: updated,
+      );
+    } on FirebaseException catch (e) {
+      throw AppFailure(e.code, 'Impossible de modifier le repas.');
+    }
+  }
 }

@@ -29,6 +29,13 @@ class FakeHistoryRepository implements HistoryRepository {
     required String scanId,
     bool deleteGlobal = false,
   }) async {}
+
+  @override
+  Future<void> updateHistoryItem({
+    required String userId,
+    required String scanId,
+    required ScanHistoryItem updated,
+  }) async {}
 }
 
 void main() {

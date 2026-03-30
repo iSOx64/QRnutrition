@@ -27,6 +27,33 @@ class ScanHistoryItem {
   final DateTime scannedAt;
   final String sourceType;
 
+  ScanHistoryItem copyWith({
+    String? productId,
+    String? barcode,
+    String? qrCodeValue,
+    String? productName,
+    double? calories,
+    double? proteins,
+    double? carbs,
+    double? fats,
+    DateTime? scannedAt,
+    String? sourceType,
+  }) {
+    return ScanHistoryItem(
+      id: id,
+      productId: productId ?? this.productId,
+      barcode: barcode ?? this.barcode,
+      qrCodeValue: qrCodeValue ?? this.qrCodeValue,
+      productName: productName ?? this.productName,
+      calories: calories ?? this.calories,
+      proteins: proteins ?? this.proteins,
+      carbs: carbs ?? this.carbs,
+      fats: fats ?? this.fats,
+      scannedAt: scannedAt ?? this.scannedAt,
+      sourceType: sourceType ?? this.sourceType,
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'productId': productId,

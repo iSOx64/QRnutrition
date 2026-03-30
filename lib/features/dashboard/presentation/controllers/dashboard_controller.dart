@@ -34,6 +34,9 @@ class DashboardController extends ChangeNotifier {
   DateTime _weekStart = DateTime.now();
   DateTime get weekStart => _weekStart;
 
+  String? _userId;
+  int? _goalCalories;
+
   Future<void> loadDaily({
     required String userId,
     required int goalCalories,
@@ -41,6 +44,8 @@ class DashboardController extends ChangeNotifier {
   }) async {
     _setState(ViewStatus.loading);
     _selectedDate = date ?? DateTime.now();
+    _userId = userId;
+    _goalCalories = goalCalories;
     try {
       _history = await _historyRepository.getUserScanHistory(userId: userId);
       _dailySummary = _dashboardRepository.calculateDailyNutritionTotals(
@@ -61,6 +66,8 @@ class DashboardController extends ChangeNotifier {
   }) async {
     _setState(ViewStatus.loading);
     _weekStart = weekStart ?? _startOfWeek(DateTime.now());
+    _userId = userId;
+    _goalCalories = goalCalories;
     try {
       _history = await _historyRepository.getUserScanHistory(userId: userId);
       _weeklySummary = _dashboardRepository.calculateWeeklyNutritionTotals(
@@ -71,6 +78,72 @@ class DashboardController extends ChangeNotifier {
       _setState(_history.isEmpty ? ViewStatus.empty : ViewStatus.success);
     } catch (_) {
       _setError('Impossible de charger le dashboard.');
+    }
+  }
+
+  Future<void> deleteMeal({
+    required String scanId,
+  }) async {
+    final userId = _userId;
+    final goal = _goalCalories;
+    if (userId == null || goal == null) return;
+
+    _setState(ViewStatus.loading);
+    try {
+      await _historyRepository.deleteHistoryItem(
+        userId: userId,
+        scanId: scanId,
+        deleteGlobal: false,
+      );
+
+      _history = _history.where((h) => h.id != scanId).toList();
+      _dailySummary = _dashboardRepository.calculateDailyNutritionTotals(
+        date: _selectedDate,
+        scans: _history,
+        goalCalories: goal,
+      );
+      _weeklySummary = _dashboardRepository.calculateWeeklyNutritionTotals(
+        weekStart: _weekStart,
+        scans: _history,
+        goalCalories: goal,
+      );
+      _setState(_history.isEmpty ? ViewStatus.empty : ViewStatus.success);
+    } catch (_) {
+      _setError('Impossible de supprimer le repas.');
+    }
+  }
+
+  Future<void> updateManualMeal({
+    required ScanHistoryItem updated,
+  }) async {
+    final userId = _userId;
+    final goal = _goalCalories;
+    if (userId == null || goal == null) return;
+
+    _setState(ViewStatus.loading);
+    try {
+      await _historyRepository.updateHistoryItem(
+        userId: userId,
+        scanId: updated.id,
+        updated: updated,
+      );
+
+      _history = _history
+          .map((h) => h.id == updated.id ? updated : h)
+          .toList();
+      _dailySummary = _dashboardRepository.calculateDailyNutritionTotals(
+        date: _selectedDate,
+        scans: _history,
+        goalCalories: goal,
+      );
+      _weeklySummary = _dashboardRepository.calculateWeeklyNutritionTotals(
+        weekStart: _weekStart,
+        scans: _history,
+        goalCalories: goal,
+      );
+      _setState(_history.isEmpty ? ViewStatus.empty : ViewStatus.success);
+    } catch (_) {
+      _setError('Impossible de modifier le repas.');
     }
   }
 
