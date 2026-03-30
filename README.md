@@ -255,23 +255,4 @@ flutter pub get
 flutter run
 ```
 
----
 
-## Seed / Demo data
-
-Dans l’écran Admin, le menu **“Seed demo”** ajoute des produits de démo.  
-La logique se trouve dans `lib/core/utils/seed_service.dart`.
-
----
-
-## Tests
-
-```bash
-flutter test
-```
-
-Les tests fournis couvrent notamment :
-- logique de navigation par rôle,
-- création / édition produit (controllers),
-- flow scanner,
-- historique et dashboard.
