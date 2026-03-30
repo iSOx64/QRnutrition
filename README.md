@@ -168,6 +168,11 @@ Dans l’app, un “repas” correspond à un **scan enregistré**.
   - Tout compte créé via l’app : `role = user`.
   - Les rôles `admin` / `super_admin` sont mis à jour manuellement dans Firestore (interface sécurisée ou via la console).
 
+- **Pages par rôle :**
+  - `user` : `UserHome`, `Scanner`, `Recherche`, `Fiche produit`, `Historique`, `Dashboard`, `Profil`.
+  - `admin` : pages `user` + `AdminHome`, `AdminProducts` (liste/ajout/modification), `AdminStatistics`, `AdminLogs`.
+  - `super_admin` : pages `admin` + `SuperAdminHome`, `ManageAdmins`, `GlobalSettings`, `SystemLogs`.
+
 - **Règles Firestore :**
   - Fichier : `firestore.rules`
   - Logique principale :

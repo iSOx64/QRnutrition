@@ -7,10 +7,12 @@ Ce guide explique comment **cloner**, **installer**, et **connecter** l’app à
 ## 0) Pré‑requis
 
 - **Flutter SDK** (stable) + Dart (via Flutter)
+  - Recommandé: Flutter `3.24+` et Dart `3.5+`
 - **Android Studio** (ou VS Code) + un émulateur / appareil Android
 - Un compte **Google** (pour Firebase)
 - **Firebase CLI** (optionnel mais pratique pour déployer les règles)
 - **FlutterFire CLI** (obligatoire pour configurer Firebase dans Flutter)
+- **Important pour iOS:** build et exécution iOS uniquement sur **macOS** avec **Xcode**.
 
 ---
 
@@ -213,6 +215,17 @@ Pour tester les écrans admin / super‑admin:
 
 Les règles Firestore limiteront automatiquement les actions selon ce rôle.
 
+### 10.0.1) Pages accessibles par rôle
+
+- **user**
+  - `UserHome`, `Scanner`, `Recherche`, `Fiche produit`, `Historique`, `Dashboard`, `Profil`.
+- **admin**
+  - Toutes les pages `user` +
+  - `AdminHome`, `AdminProducts` (liste/ajout/modification), `AdminStatistics`, `AdminLogs`.
+- **super_admin**
+  - Toutes les pages `admin` +
+  - `SuperAdminHome`, `ManageAdmins`, `GlobalSettings`, `SystemLogs`.
+
 ---
 
 ## 10.1) Utilisation: ajouter / supprimer un repas
@@ -273,3 +286,21 @@ python tools/import_off_morocco.py \
   → Vérifie:
     - que les règles Firestore (`firestore.rules`) sont bien déployées,
     - que ton user a le bon `role` dans `users/{uid}`.
+
+---
+
+## 13) Validation finale (checklist prof)
+
+Après installation, vérifie rapidement ces points:
+
+- [ ] L’app démarre sans erreur (`flutter run`).
+- [ ] Inscription / connexion Email fonctionne.
+- [ ] Un scan produit fonctionne et affiche la fiche (image + nutriments).
+- [ ] Dashboard jour affiche les repas du jour.
+- [ ] Ajout d’un repas perso depuis Dashboard fonctionne.
+- [ ] Modification d’un repas manuel fonctionne.
+- [ ] Suppression d’un repas depuis Dashboard ou Historique fonctionne.
+- [ ] Firestore contient des données dans:
+  - `users/{uid}`
+  - `users/{uid}/scan_history/{scanId}`
+  - `scans/{scanId}`
