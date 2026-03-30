@@ -24,12 +24,12 @@ class UserHomePage extends StatelessWidget {
 
     final actions = [
       QuickActionItem(
-        label: 'Scanner',
+        label: 'Scanner code-barres',
         icon: Icons.qr_code_scanner,
         onTap: () => context.push(AppRoute.scanner.path),
       ),
       QuickActionItem(
-        label: 'Scanner image',
+        label: 'Scanner image (code-barres)',
         icon: Icons.photo_library,
         onTap: () => context.push(AppRoute.scanner.path, extra: true),
       ),

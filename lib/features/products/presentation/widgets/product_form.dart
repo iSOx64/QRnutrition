@@ -48,7 +48,7 @@ class ProductForm extends StatefulWidget {
     required this.onSubmit,
     this.initialData,
     this.submitLabel = 'Enregistrer',
-    this.showQrCodeField = true,
+    this.showQrCodeField = false,
   });
 
   final ProductFormData? initialData;
@@ -142,7 +142,7 @@ class _ProductFormState extends State<ProductForm> {
         children: [
           _textField(_nameController, 'Nom', required: true),
           _textField(_brandController, 'Marque', required: true),
-          _textField(_barcodeController, 'Barcode'),
+          _textField(_barcodeController, 'Code-barres'),
           if (widget.showQrCodeField)
             _textField(_qrController, 'QR interne'),
           _textField(_categoryController, 'Categorie', required: true),

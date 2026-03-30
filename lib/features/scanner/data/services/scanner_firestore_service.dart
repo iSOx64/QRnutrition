@@ -21,18 +21,7 @@ class ScannerFirestoreService {
       _firestore.collection('users');
 
   Future<Product?> findProductByCode(ScanResultModel result) async {
-    if (result.isBarcode) {
-      // Try barcode first, then fall back to QR lookup
-      final byBarcode = await getProductByBarcode(result.rawValue);
-      if (byBarcode != null) return byBarcode;
-      return getProductByQrValue(result.rawValue);
-    }
-    if (result.isQrCode) {
-      return getProductByQrValue(result.rawValue);
-    }
-    // Unknown format: try both lookups
-    final byQr = await getProductByQrValue(result.rawValue);
-    if (byQr != null) return byQr;
+    if (result.rawValue.trim().isEmpty) return null;
     return getProductByBarcode(result.rawValue);
   }
 
@@ -43,31 +32,6 @@ class ScannerFirestoreService {
         .get();
     if (snapshot.docs.isEmpty) return null;
     return Product.fromDoc(snapshot.docs.first);
-  }
-
-  Future<Product?> getProductByQrValue(String qrCodeValue) async {
-    final snapshot = await _productsRef
-        .where('qrCodeValue', isEqualTo: qrCodeValue)
-        .limit(1)
-        .get();
-    if (snapshot.docs.isNotEmpty) {
-      return Product.fromDoc(snapshot.docs.first);
-    }
-
-    // Fallback: if QR contient l'id du produit (ex: QR-<id>-<ts>),
-    // on tente de retrouver directement le document.
-    final productId = _extractProductId(qrCodeValue);
-    if (productId == null) return null;
-    final doc = await _productsRef.doc(productId).get();
-    if (!doc.exists) return null;
-    return Product.fromDoc(doc);
-  }
-
-  String? _extractProductId(String value) {
-    // Pattern: QR-<productId>-<timestamp>
-    final match = RegExp(r'^QR-([A-Za-z0-9_-]+)-\d+$').firstMatch(value);
-    if (match == null) return null;
-    return match.group(1);
   }
 
   Future<void> saveScan({

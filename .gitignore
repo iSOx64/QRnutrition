@@ -1,4 +1,4 @@
-# Miscellaneous
+﻿# Miscellaneous
 *.class
 *.log
 *.pyc
@@ -32,6 +32,20 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Firebase / credentials (do not commit)
+**/*firebase-adminsdk*.json
+**/*service-account*.json
+**/*credentials*.json
+
+# OpenFoodFacts datasets/cache (do not commit)
+/tools/data/
+/tools/cache/
 
 # Symbolication related
 app.*.symbols

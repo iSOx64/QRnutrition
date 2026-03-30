@@ -16,7 +16,7 @@ class ProductFirestoreService {
     final docRef = _productsRef.doc();
     final qrCodeValue = product.qrCodeValue == null ||
             product.qrCodeValue!.trim().isEmpty
-        ? 'QR-${docRef.id}-${now.millisecondsSinceEpoch}'
+        ? null
         : product.qrCodeValue;
     final created = Product(
       id: docRef.id,

@@ -67,7 +67,7 @@ class _ScannerPageState extends State<ScannerPage> {
       if (_useCamera) {
         await _scannerController.stop();
       }
-      // Use flutter_zxing for cross-platform image QR/barcode decoding
+      // Use flutter_zxing for cross-platform barcode image decoding
       final code = await zx.readBarcodeImagePathString(
         path,
         DecodeParams(
@@ -77,10 +77,14 @@ class _ScannerPageState extends State<ScannerPage> {
         ),
       );
 
-      String? rawValue =
-          (code.isValid && code.text != null && code.text!.isNotEmpty)
-              ? code.text!
-              : null;
+      final isBarcodeFormat =
+          code.format != Format.qrCode && code.format != Format.none;
+      String? rawValue = (code.isValid &&
+              isBarcodeFormat &&
+              code.text != null &&
+              code.text!.isNotEmpty)
+          ? code.text!
+          : null;
 
       if (rawValue == null) {
         try {
@@ -88,7 +92,11 @@ class _ScannerPageState extends State<ScannerPage> {
           final barcode = capture?.barcodes.isEmpty ?? true
               ? null
               : capture!.barcodes.first;
+          if (barcode?.format == BarcodeFormat.qrCode) {
+            rawValue = null;
+          } else {
           rawValue = _barcodeValue(barcode);
+          }
         } catch (_) {
           // Ignore fallback errors
         }
@@ -99,7 +107,7 @@ class _ScannerPageState extends State<ScannerPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
-              'Aucun code detecte. Utilise un QR net (PNG/JPG) exporte.',
+              'Aucun code-barres detecte. Utilise une image nette (PNG/JPG).',
             ),
           ),
         );
@@ -238,7 +246,7 @@ class _ScannerPageState extends State<ScannerPage> {
             });
           }
           return Scaffold(
-            appBar: AppBar(title: const Text('Scanner')),
+            appBar: AppBar(title: const Text('Scanner code-barres')),
             body: _useCamera
                 ? Stack(
                     children: [
@@ -249,6 +257,7 @@ class _ScannerPageState extends State<ScannerPage> {
                           final barcode = capture.barcodes.isEmpty
                               ? null
                               : capture.barcodes.first;
+                          if (barcode?.format == BarcodeFormat.qrCode) return;
                           final rawValue = _barcodeValue(barcode);
                           if (rawValue == null || rawValue.isEmpty) return;
                           _isProcessing = true;
@@ -306,7 +315,7 @@ class _ScannerPageState extends State<ScannerPage> {
                           ),
                           const SizedBox(height: 16),
                           const Text(
-                            'Scanner une image',
+                            'Scanner un code-barres',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w600,
@@ -314,7 +323,7 @@ class _ScannerPageState extends State<ScannerPage> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Choisis un fichier image contenant un QR ou un code-barres.',
+                            'Choisis un fichier image contenant un code-barres.',
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
@@ -344,14 +353,14 @@ class _ScannerPageState extends State<ScannerPage> {
   }
 
   ScanSourceType? _mapFormat(BarcodeFormat? format) {
-    if (format == BarcodeFormat.qrCode) return ScanSourceType.qrcode;
     if (format == null) return null;
+    if (format == BarcodeFormat.qrCode) return null;
     return ScanSourceType.barcode;
   }
 
   ScanSourceType? _mapZxingFormat(int? format) {
     if (format == null || format == Format.none) return null;
-    if (format == Format.qrCode) return ScanSourceType.qrcode;
+    if (format == Format.qrCode) return null;
     // All other formats (EAN, UPC, Code128, etc.) are barcodes
     return ScanSourceType.barcode;
   }
@@ -369,6 +378,7 @@ class _ScannerPageState extends State<ScannerPage> {
         controller.product != null) {
       await showModalBottomSheet(
         context: context,
+        isScrollControlled: true,
         builder: (_) => ScanResultSheet(
           product: controller.product!,
           onOpenDetails: () {

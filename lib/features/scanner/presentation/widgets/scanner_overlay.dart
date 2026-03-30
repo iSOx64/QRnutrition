@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ScannerOverlay extends StatelessWidget {
   const ScannerOverlay({
     super.key,
-    this.message = 'Alignez le code dans le cadre',
+    this.message = 'Alignez le code-barres dans le cadre',
   });
 
   final String message;

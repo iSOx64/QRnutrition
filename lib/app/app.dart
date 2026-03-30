@@ -14,6 +14,7 @@ import '../features/products/data/repositories/product_repository.dart';
 import '../features/scanner/data/services/scanner_service.dart';
 import '../features/scanner/data/services/scanner_firestore_service.dart';
 import '../features/scanner/data/repositories/scanner_repository.dart';
+import '../features/openfoodfacts/data/services/openfoodfacts_service.dart';
 import '../features/history/data/services/history_firestore_service.dart';
 import '../features/history/data/repositories/history_repository.dart';
 import '../features/dashboard/data/services/dashboard_service.dart';
@@ -71,9 +72,13 @@ class QRNutritionApp extends StatelessWidget {
         Provider<ScannerFirestoreService>(
           create: (_) => ScannerFirestoreService(),
         ),
-        ProxyProvider2<ScannerService, ScannerFirestoreService, ScannerRepository>(
-          update: (_, scanner, firestore, __) =>
-              ScannerRepository(scanner, firestore),
+        Provider<OpenFoodFactsService>(
+          create: (_) => OpenFoodFactsService(),
+        ),
+        ProxyProvider3<ScannerService, ScannerFirestoreService,
+            OpenFoodFactsService, ScannerRepository>(
+          update: (_, scanner, firestore, openFoodFacts, __) =>
+              ScannerRepository(scanner, firestore, openFoodFacts),
         ),
         Provider<HistoryFirestoreService>(
           create: (_) => HistoryFirestoreService(),

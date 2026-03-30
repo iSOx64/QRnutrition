@@ -1,66 +1,42 @@
-# QR Nutrition
+﻿# QR Nutrition
 
-Application mobile Flutter + Firebase pour scanner des produits alimentaires
-via QR code ou code-barres, consulter l'historique et suivre la nutrition
-quotidienne. Le projet gere les roles `user`, `admin` et `super_admin`.
+Application mobile Flutter + Firebase pour scanner des produits alimentaires via QR code ou code‑barres, consulter l’historique et suivre la nutrition quotidienne. Le projet gère les rôles `user`, `admin` et `super_admin`.
 
 ## Stack
 - Flutter
 - Firebase Core / Auth / Firestore / Storage
-- Firebase Messaging (pret pour notifications)
-- `mobile_scanner` (scan QR + code-barres)
-- `qr_flutter` (generation QR)
+- Firebase Messaging (prêt pour notifications)
+- `mobile_scanner` (scan QR + code‑barres)
+- `qr_flutter` (génération QR)
 - `provider` + `go_router`
 
-## Structure du projet
+## Installation complète
+Lis `INSTALLATION.md` pour une installation **de A à Z** (clone → Flutter → Firebase → règles → run) et la création de `.env`.
+
+## FlutterFire (obligatoire pour Firebase)
+La configuration Firebase se fait avec **FlutterFire CLI**, pas via `.env`.
+Commande :
 ```
-lib/
-  app/
-    app.dart
-    router.dart
+flutterfire configure
+```
+Elle génère :
+- `lib/firebase_options.dart`
+- `android/app/google-services.json`
+- (si iOS) `ios/Runner/GoogleService-Info.plist`
 
-  core/
-    constants/
-    errors/
-    theme/
-    utils/
-    widgets/
-
-  features/
-    auth/
-    home/
-    profile/
-    products/
-    scanner/
-    history/
-    dashboard/
-    admin/
-    settings/
-    super_admin/
-
-  firebase_options.dart
-  main.dart
+## Configuration rapide
+```
+flutter pub get
+flutter run
 ```
 
-## Dependance a ajouter
-Deja referencees dans `pubspec.yaml`:
-- `firebase_core`, `firebase_auth`, `cloud_firestore`
-- `firebase_storage`, `firebase_messaging`
-- `google_sign_in`
-- `mobile_scanner`, `qr_flutter`
-- `uuid`, `intl`
-- `provider`, `go_router`
+## Fichier `.env`
+- Le fichier `.env` est **local** et ignoré par git.
+- Copie l’exemple puis ajuste si besoin :
 
-## Configuration Firebase
-1. Lancer la configuration Firebase:
-   - `flutterfire configure`
-2. Verifier les fichiers:
-   - `lib/firebase_options.dart`
-   - `android/app/google-services.json`
-3. Mettre a jour les regles:
-   - `firestore.rules`
-
-Le fichier `firebase.json` reference les regles Firestore.
+```
+cp .env.example .env
+```
 
 ## Collections Firestore
 ```
@@ -72,80 +48,59 @@ admin_logs/{logId}
 settings/app_config
 ```
 
-## Gestion des roles
-Roles possibles:
+## Gestion des rôles
+Rôles possibles :
 - `user`
 - `admin`
 - `super_admin`
 
-Attribution:
-- Tout compte cree via l'app: `role = user`
-- `admin` et `super_admin` sont attribues manuellement et de maniere securisee.
+Attribution :
+- Tout compte créé via l’app : `role = user`
+- `admin` et `super_admin` sont attribués manuellement.
 
-### Tester les roles
-1. Creer un compte via l'app.
+### Tester les rôles
+1. Créer un compte via l’app.
 2. Aller dans Firestore `users/{uid}`.
-3. Modifier le champ `role`:
-   - `admin` ou `super_admin`.
+3. Modifier le champ `role` (`admin` ou `super_admin`).
 
-## QR / Code-barres
+## QR / Code‑barres
 ### Lecture
-Le module scanner utilise `mobile_scanner` et accepte:
+Le module scanner utilise `mobile_scanner` et accepte :
 - QR code
-- Code-barres
+- Code‑barres
 
-### Generation
-Si un produit est cree sans `qrCodeValue`, une valeur unique est generee.
-Dans la page d'edition produit (admin), un QR est affiche et peut etre copie.
+### Génération
+Si un produit est créé sans `qrCodeValue`, une valeur unique est générée.
+Dans la page d’édition produit (admin), un QR est affiché et peut être copié.
 
-### Permissions
-Android `android/app/src/main/AndroidManifest.xml`:
+### Permissions caméra
+Android `android/app/src/main/AndroidManifest.xml` :
 ```
 <uses-permission android:name="android.permission.CAMERA" />
 ```
 
-iOS `ios/Runner/Info.plist`:
+iOS `ios/Runner/Info.plist` :
 ```
 <key>NSCameraUsageDescription</key>
 <string>Camera required for scanning</string>
 ```
 
-## Lancer l'application
+## Lancer l’application
 ```
 flutter pub get
 flutter run
 ```
 
 ## Seed / Demo data
-Dans l'ecran Admin, le menu "Seed demo" ajoute des produits de demo.
+Dans l’écran Admin, le menu "Seed demo" ajoute des produits de démo.
 La logique est dans `lib/core/utils/seed_service.dart`.
 
 ## Tests
 ```
 flutter test
 ```
-Tests fournis:
-- navigation par role
-- creation produit (controller)
-- flow scanner (controller)
-- historique
-- dashboard
 
 ## Notes
-- Les regles Firestore limitent les actions selon le role.
-- Les roles ne sont pas modifiables via l'interface publique.
-- Le systeme est pret pour evoluer (notifications, storage, etc.).
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Les règles Firestore limitent les actions selon le rôle.
+- Les rôles ne sont pas modifiables via l’interface publique.
+- Le système est prêt pour évoluer (notifications, storage, etc.).

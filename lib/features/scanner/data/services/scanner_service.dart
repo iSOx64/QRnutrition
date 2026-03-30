@@ -15,10 +15,7 @@ class ScannerService {
 
   ScanSourceType _inferSourceType(String value) {
     if (value.isEmpty) return ScanSourceType.unknown;
-    final isNumeric = RegExp(r'^\d+$').hasMatch(value);
-    if (isNumeric && value.length >= 8 && value.length <= 14) {
-      return ScanSourceType.barcode;
-    }
-    return ScanSourceType.qrcode;
+    // On utilise uniquement des codes-barres.
+    return ScanSourceType.barcode;
   }
 }

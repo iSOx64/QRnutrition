@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/widgets/info_card.dart';
-import '../../../../core/widgets/qr_preview.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../scanner/data/models/scan_result_model.dart';
 import '../../../scanner/data/repositories/scanner_repository.dart';
 import '../../data/models/product_model.dart';
+import '../widgets/nutrition_table.dart';
 
 class ProductDetailsPage extends StatelessWidget {
   const ProductDetailsPage({
@@ -20,6 +20,36 @@ class ProductDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = context.watch<AuthController>();
     final user = auth.state.user;
+
+    final hasNutrition = product.calories > 0 ||
+        product.proteins > 0 ||
+        product.carbs > 0 ||
+        product.fats > 0 ||
+        product.extraNutrients.isNotEmpty;
+
+    final nutritionRows = <NutrientEntry>[
+      NutrientEntry(
+        label: 'Calories',
+        value: product.calories,
+        unit: 'kcal',
+      ),
+      NutrientEntry(
+        label: 'Protéines',
+        value: product.proteins,
+        unit: 'g',
+      ),
+      NutrientEntry(
+        label: 'Glucides',
+        value: product.carbs,
+        unit: 'g',
+      ),
+      NutrientEntry(
+        label: 'Lipides',
+        value: product.fats,
+        unit: 'g',
+      ),
+      ...product.extraNutrients,
+    ];
 
     return Scaffold(
       appBar: AppBar(title: const Text('Fiche produit')),
@@ -56,6 +86,35 @@ class ProductDetailsPage extends StatelessWidget {
             const SizedBox(height: 6),
             Text('${product.brand} • ${product.category}'),
             const SizedBox(height: 16),
+            if (product.nutriScore != null ||
+                product.novaGroup != null ||
+                product.ecoScore != null) ...[
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: [
+                  if (product.nutriScore != null)
+                    InfoCard(
+                      title: 'Nutri-Score',
+                      subtitle: product.nutriScore!,
+                      icon: Icons.health_and_safety,
+                    ),
+                  if (product.novaGroup != null)
+                    InfoCard(
+                      title: 'Groupe NOVA',
+                      subtitle: product.novaGroup!.toString(),
+                      icon: Icons.category,
+                    ),
+                  if (product.ecoScore != null)
+                    InfoCard(
+                      title: 'Eco-score',
+                      subtitle: product.ecoScore!,
+                      icon: Icons.eco,
+                    ),
+                ],
+              ),
+              const SizedBox(height: 16),
+            ],
             Wrap(
               spacing: 12,
               runSpacing: 12,
@@ -83,6 +142,38 @@ class ProductDetailsPage extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
+            if (product.quantity != null && product.quantity!.isNotEmpty) ...[
+              InfoCard(
+                title: 'Quantité',
+                subtitle: product.quantity!,
+                icon: Icons.scale,
+              ),
+              const SizedBox(height: 12),
+            ],
+            if (product.countries != null && product.countries!.isNotEmpty) ...[
+              InfoCard(
+                title: 'Pays',
+                subtitle: product.countries!,
+                icon: Icons.public,
+              ),
+              const SizedBox(height: 12),
+            ],
+            if (product.labels != null && product.labels!.isNotEmpty) ...[
+              InfoCard(
+                title: 'Labels',
+                subtitle: product.labels!,
+                icon: Icons.loyalty,
+              ),
+              const SizedBox(height: 12),
+            ],
+            if (product.packaging != null && product.packaging!.isNotEmpty) ...[
+              InfoCard(
+                title: 'Emballage',
+                subtitle: product.packaging!,
+                icon: Icons.all_inbox,
+              ),
+              const SizedBox(height: 12),
+            ],
             InfoCard(
               title: 'Ingredients',
               subtitle: product.ingredients.isEmpty
@@ -97,38 +188,16 @@ class ProductDetailsPage extends StatelessWidget {
                   product.allergens.isEmpty ? 'Aucun' : product.allergens,
               icon: Icons.warning_amber,
             ),
-            if (product.extraNutrients.isNotEmpty) ...[
+            if (hasNutrition) ...[
               const SizedBox(height: 12),
-              InfoCard(
-                title: 'Nutriments supplementaires',
-                subtitle: product.extraNutrients
-                    .map((e) => '${e.label}: ${e.value} ${e.unit}')
-                    .join('\n'),
-                icon: Icons.science,
-              ),
+              NutritionTable(nutrients: nutritionRows),
             ],
             const SizedBox(height: 12),
             InfoCard(
-              title: 'Barcode',
+              title: 'Code-barres',
               subtitle: product.barcode ?? 'Non disponible',
-              icon: Icons.qr_code,
+              icon: Icons.document_scanner,
             ),
-            const SizedBox(height: 12),
-            InfoCard(
-              title: 'QR interne',
-              subtitle: product.qrCodeValue ?? 'Non disponible',
-              icon: Icons.qr_code_2,
-            ),
-            if (product.qrCodeValue != null &&
-                product.qrCodeValue!.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              Text(
-                'QR du produit',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 8),
-              QrPreview(value: product.qrCodeValue!, size: 180),
-            ],
             const SizedBox(height: 24),
             if (user != null)
               SizedBox(
@@ -136,9 +205,7 @@ class ProductDetailsPage extends StatelessWidget {
                 child: FilledButton(
                   onPressed: () async {
                     final repository = context.read<ScannerRepository>();
-                    final rawValue = product.barcode ??
-                        product.qrCodeValue ??
-                        product.id;
+                    final rawValue = product.barcode ?? product.id;
                     final scanResult = ScanResultModel(
                       rawValue: rawValue,
                       sourceType: ScanSourceType.manual,

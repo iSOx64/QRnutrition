@@ -10,6 +10,7 @@ import '../../../../core/widgets/search_bar.dart';
 import '../../data/repositories/product_repository.dart';
 import '../controllers/product_search_controller.dart';
 import '../widgets/product_result_tile.dart';
+import '../../../openfoodfacts/data/services/openfoodfacts_service.dart';
 
 class ProductSearchPage extends StatefulWidget {
   const ProductSearchPage({super.key});
@@ -31,7 +32,10 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) =>
-          ProductSearchController(context.read<ProductRepository>())
+          ProductSearchController(
+            context.read<ProductRepository>(),
+            context.read<OpenFoodFactsService>(),
+          )
             ..loadActiveProducts(),
       child: Scaffold(
         appBar: AppBar(title: const Text('Recherche')),

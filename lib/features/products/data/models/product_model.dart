@@ -20,6 +20,13 @@ class Product {
     required this.createdAt,
     required this.updatedAt,
     required this.createdBy,
+    this.nutriScore,
+    this.novaGroup,
+    this.ecoScore,
+    this.quantity,
+    this.countries,
+    this.labels,
+    this.packaging,
   });
 
   final String id;
@@ -40,6 +47,13 @@ class Product {
   final DateTime createdAt;
   final DateTime updatedAt;
   final String createdBy;
+  final String? nutriScore;
+  final int? novaGroup;
+  final String? ecoScore;
+  final String? quantity;
+  final String? countries;
+  final String? labels;
+  final String? packaging;
 
   Product copyWith({
     String? name,
@@ -59,6 +73,13 @@ class Product {
     DateTime? createdAt,
     DateTime? updatedAt,
     String? createdBy,
+    String? nutriScore,
+    int? novaGroup,
+    String? ecoScore,
+    String? quantity,
+    String? countries,
+    String? labels,
+    String? packaging,
   }) {
     return Product(
       id: id,
@@ -79,6 +100,13 @@ class Product {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       createdBy: createdBy ?? this.createdBy,
+      nutriScore: nutriScore ?? this.nutriScore,
+      novaGroup: novaGroup ?? this.novaGroup,
+      ecoScore: ecoScore ?? this.ecoScore,
+      quantity: quantity ?? this.quantity,
+      countries: countries ?? this.countries,
+      labels: labels ?? this.labels,
+      packaging: packaging ?? this.packaging,
     );
   }
 
@@ -101,6 +129,13 @@ class Product {
       'createdAt': Timestamp.fromDate(createdAt),
       'updatedAt': Timestamp.fromDate(updatedAt),
       'createdBy': createdBy,
+      'nutriScore': nutriScore,
+      'novaGroup': novaGroup,
+      'ecoScore': ecoScore,
+      'quantity': quantity,
+      'countries': countries,
+      'labels': labels,
+      'packaging': packaging,
     };
   }
 
@@ -135,6 +170,13 @@ class Product {
       createdAt: createdAtTs?.toDate() ?? DateTime.now(),
       updatedAt: updatedAtTs?.toDate() ?? DateTime.now(),
       createdBy: data['createdBy'] as String? ?? '',
+      nutriScore: data['nutriScore'] as String?,
+      novaGroup: (data['novaGroup'] as num?)?.toInt(),
+      ecoScore: data['ecoScore'] as String?,
+      quantity: data['quantity'] as String?,
+      countries: data['countries'] as String?,
+      labels: data['labels'] as String?,
+      packaging: data['packaging'] as String?,
     );
   }
 }
